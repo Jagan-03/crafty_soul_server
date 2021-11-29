@@ -3,13 +3,6 @@ require("dotenv").config();
 const express = require('express');
 const cors = require("cors");
 const mongo = require("./mongo.js");
-const session = require("express-session");
-const passport = require("passport");
-const findOrCreate = require("mongoose-findorcreate");
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-
-// Importing Mongoose Models
-const User = require("./models/user.js");
 
 // Importing routes
 const register = require("./routes/register.js");
@@ -26,21 +19,6 @@ app.use(cors());
 // Parsing request body as JSON format
 app.use(express.json());
 // Initializing passport
-
-app.use(passport.initialize());
-
-passport.use(new GoogleStrategy({
-    clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: "https://localhost:3001/auth/google/crafty_soul",
-    userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    User.findOrCreate({ googleId: profile.id }, function (err, user) {
-      return cb(err, user);
-    });
-  }
-));
 
 (async () => {
     try {
